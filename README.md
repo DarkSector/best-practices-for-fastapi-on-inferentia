@@ -5,7 +5,7 @@
 Production workloads often have high throughput, low latency and cost requirements. Inefficient architectures that sub-optimally utilize accelerators could lead to unnecessarily high production costs. In this repo, we will show how to optimally utilize NeuronCores with FastAPI to maximize throughput at minimum latency. In the following sections, we will show to setup this solution on an Inf1 instance and will walkthrough how to compile models on NeuronCores, deploy models with FastAPI and monitor NeuronCores. An overview of the solution architecture is depicted in Fig. 1.
 
 <div align="center">
-<img src="./images/Architecture.png" width="90%">
+<img src="./doc_images/Architecture.png" width="90%">
 <br/>
 Fig. 1 - EC2 Solution Architecture
 </div>
@@ -13,7 +13,7 @@ Fig. 1 - EC2 Solution Architecture
 
 ## 2. AWS Inferentia NeuronCores
 
-Each Inferentia chip has 4 NeuronCores available that share the system vCPUs and memory. The table below shows a breakdown of NeuroCores available for different Inf1 instance sizes.
+Each Inferentia1 chip has 4 NeuronCoresV1 available that share the system vCPUs and memory. The table below shows a breakdown of NeuronCores available for different Inf1 instance sizes.
 
 
 | Instance Size | # Accelerators| # NeuronCores| vCPUs | Memory (GiB) |
@@ -23,10 +23,19 @@ Each Inferentia chip has 4 NeuronCores available that share the system vCPUs and
 | Inf1.6xlarge  |        4      |        16    |   24  |       48     |
 | Inf1.24xlarge |        16     |        64    |   96  |       19     |
 
+Similarly, each Inferentia2 chip has 2 NeuronCoresV2 available. The table below shows a breakdown of NeuronCores-v2 available for different Inf2 instance sizes.
+
+| Instance Size | # Accelerators | # NeuronCores | vCPUs | Memory (GiB) |
+|---------------|:--------------:|:-------------:|:-----:|:------------:|
+| Inf2.xlarge   |       1        |       2       |   4   |      32      |
+| Inf2.8xlarge  |       1        |       2       |  32   |      32      |
+| Inf2.24xlarge |       6        |      12       |  96   |     192      |
+| Inf2.48xlarge |       12       |      24       |  192  |     384      |
+
 Neuron Runtime is responsible for executing models on Neuron Devices. Neuron Runtime determines which NeuronCore will execute which model and how to execute it. Configuration of the Neuron Runtime is controlled through the use of [Environment variables](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/neuron-runtime/nrt-configurable-parameters.html#nrt-configuration) at the process level. Two popular environment variables are NEURON_RT_NUM_CORES and NEURON_RT_VISIBLE_CORES. You can find a list of all environment variables [here](https://awsdocs-neuron.readthedocs-hosted.com/en/latest/neuron-runtime/nrt-configurable-parameters.html#nrt-configuration).
 
 <div align="center">
-<img src="./images/Environment_variables.png" width="90%">
+<img src="./doc_images/Environment_variables.png" width="90%">
 <br/>
 Fig. 2 - Key Neuron Runtime Environment Variables
 </div>
@@ -75,7 +84,7 @@ neuron-top
 And your output should be similar to the following figure. In this scenario, we have specified to use 6 NeuronCores and 2 models per server on an Inf1.6xlarge instance. The screenshot below shows that 2 models of size 177.2MB each are loaded on 6 NeuronCores. With a total of 12 models loaded, you can see the Device Memory Used is 2.1 GB. Use the arrow keys to move between the NeuronCores on different devices.
 
 <div align="center">
-<img src="./images/Loading_Models.png" width="90%">
+<img src="./doc_images/Loading_Models.png" width="90%">
 <br/>
 Fig. 4 - Loading Models
 </div>
@@ -84,7 +93,7 @@ Fig. 4 - Loading Models
 Once you run [run_apis.py](https://github.com/aws-samples/best-practices-for-fastapi-on-inferentia/blob/main/run_apis.py) script, you can see % utilization of each of the 6 NeuronCores as below. You can also see the System vCPU usage and Runtime vCPU usage. 
 
 <div align="center">
-<img src="./images/Benchmark.png" width="90%">
+<img src="./doc_images/Benchmark.png" width="90%">
 <br/>
 Fig. 4 - NeuronCore Utilization when calling APIs
 </div>
