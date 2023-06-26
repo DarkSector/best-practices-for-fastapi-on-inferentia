@@ -3,8 +3,6 @@ from fastapi import FastAPI,logger,responses
 from configparser import ConfigParser
 import torch, os, logging
 import importlib
-import torch_neuron
-
 
 global device
 global processor
