@@ -1,4 +1,0 @@
-[neuron]
-name=Neuron YUM Repository
-baseurl=https://yum.repos.neuron.amazonaws.com
-enabled=1
