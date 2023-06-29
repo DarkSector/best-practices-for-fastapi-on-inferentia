@@ -1,5 +1,6 @@
 #!/bin/bash
 
+source ../config.properties
 source docker.properties
 
 # This will remove the last known container and re-run
