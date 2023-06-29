@@ -2,16 +2,23 @@ import torch
 import os
 import torch_neuronx
 import importlib
+import pathlib
+
 
 batch_size = 1
 
 sequence_length = 128
 
+# model name and the name it will be saved as finally
 model_name = 'twmkn9/bert-base-uncased-squad2'
+model_save_name = model_name.split('/')[-1]
+
 tokenizer_class_name = 'AutoTokenizer'
 model_class_name = 'AutoModelForQuestionAnswering'
 
-
+# some environment variables to make the process easier
+path_to_traced_models  = os.environ.get("MODEL_SAVE_PATH")
+compiler_workdir = f"{model_save_name}-{batch_size}"
 
 # 2. LOAD PRE-TRAINED MODEL
 print(f'\nLoading pre-trained model: {model_name}')
@@ -51,15 +58,22 @@ example_inputs = (
 pipeline_cores = 1
 
 
-model_traced = torch.neuronx.trace(model, 
+model_traced = torch_neuronx.trace(model, 
                                   example_inputs, 
-                                  compiler_workdir='./bert-bs-'+str(batch_size))
+                                  compiler_workdir=compiler_workdir)
 
 
 answer_logits = model_traced(*example_inputs)
 
-model_traced.save('./compiled-model-bs-'+str(batch_size)+'.pt')
 
-print('\n Model Traced and Saved')
+# save at the path defined in config.properties
+# create the path first
+pathlib.Path(path_to_traced_models).mkdir(parents=True, exist_ok=True)
+
+# define the final file name
+model_save_path = path_to_traced_models + f'/compiled-{model_save_name}-inf2-{batch_size}.pt'
+model_traced.save(model_save_path)
+
+print(f'\n Model Traced and Saved at {model_save_path}')
 
 
