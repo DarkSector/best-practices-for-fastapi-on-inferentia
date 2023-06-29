@@ -17,7 +17,6 @@ tokenizer_class_name = 'AutoTokenizer'
 model_class_name = 'AutoModelForQuestionAnswering'
 
 # some environment variables to make the process easier
-path_to_traced_models  = os.environ.get("MODEL_SAVE_PATH")
 compiler_workdir = f"{model_save_name}-{batch_size}"
 
 # 2. LOAD PRE-TRAINED MODEL
@@ -65,13 +64,8 @@ model_traced = torch_neuronx.trace(model,
 
 answer_logits = model_traced(*example_inputs)
 
-
-# save at the path defined in config.properties
-# create the path first
-pathlib.Path(path_to_traced_models).mkdir(parents=True, exist_ok=True)
-
 # define the final file name
-model_save_path = path_to_traced_models + f'/compiled-{model_save_name}-inf2-{batch_size}.pt'
+model_save_path = f'./compiled-model-{batch_size}.pt'
 model_traced.save(model_save_path)
 
 print(f'\n Model Traced and Saved at {model_save_path}')
