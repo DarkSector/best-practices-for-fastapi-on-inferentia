@@ -1,6 +1,5 @@
 #!/bin/bash
 
-source ../config.properties
 source docker.properties
 
 # Use Docker Buildkit to speed up docker builds
@@ -11,6 +10,4 @@ source docker.properties
 echo "Getting ECR credentials to fetch torch-neuron and torch-neuronx deep learning container images for region ${AWS_REGION}"
 aws ecr get-login-password --region ${AWS_REGION} | docker login --username AWS --password-stdin 763104351884.dkr.ecr.${AWS_REGION}.amazonaws.com
 
-echo "registry $registry"
-echo "docker image name: $docker_image_name"
-# DOCKER_BUILDKIT=1 docker build --build-arg AWS_REGION=${AWS_REGION} -t ${registry}/${docker_image_name} -f Dockerfile .
+DOCKER_BUILDKIT=1 docker build --build-arg AWS_REGION=${AWS_REGION} -t ${registry}/${docker_image_name} -f Dockerfile .

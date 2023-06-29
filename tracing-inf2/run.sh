@@ -8,11 +8,8 @@ source docker.properties
 
 mount_directory=`realpath .`
 
-echo "Mounting path ${mount_directory} to /trace-model within the container"
-echo "Docker container name: ${docker_container_name}"
-
 # Edit --device argument when using multiple chips
 docker run -t -d \
-	--name ${docker_container_name} \
+	--name ${docker_container_name}-${chip_type} \
 	-v ${mount_directory}:/trace-model \
-	--device /dev/neuron0 ${registry}/${docker_image_name} 
+	--device /dev/neuron0 ${registry}/${docker_image_name}-${chip_type}
