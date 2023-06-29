@@ -3,6 +3,7 @@ from fastapi import FastAPI, logger, responses
 from configparser import ConfigParser
 import torch, os, logging
 import importlib
+from dotenv import load_dotenv
 
 global device
 global processor
@@ -13,12 +14,15 @@ global default_question, default_context
 
 logger = logging.getLogger()
 
+config = dotenv_values("config.properties")
+
 # Read static configuration from config.properties
 logger.warning("\nParsing configuration ...")
 
 with open('config.properties') as f:
     config_lines = '[global]\n' + f.read()
     f.close()
+
 config = ConfigParser()
 config.read_string(config_lines)
 

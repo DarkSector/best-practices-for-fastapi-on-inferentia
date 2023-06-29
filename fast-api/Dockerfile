@@ -5,9 +5,10 @@ FROM $BASE_IMAGE
 LABEL description="Base container for Fastapi on Inferentia"
 
 # Install other python libraries
-RUN pip install fastapi hypercorn==0.13.2 
+RUN pip install fastapi hypercorn==0.13.2 python-dotenv
 
-COPY . /app/server
+COPY ./fast-api /app/server
+COPY *.pt /app/server
 
 WORKDIR /app/server
 
